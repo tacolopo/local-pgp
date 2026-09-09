@@ -1,0 +1,16 @@
+{
+  "name": "local-pgp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A tiny offline-capable PGP text utility",
+  "type": "module",
+  "scripts": {
+    "build": "node build.js",
+    "start": "npm run build && node server.js",
+    "test": "node --test test/crypto.test.js",
+    "test:browser": "playwright test"
+  },
+  "engines": { "node": ">=22" },
+  "dependencies": { "openpgp": "6.3.1" },
+  "devDependencies": { "@playwright/test": "1.63.0", "esbuild": "0.28.2" }
+}

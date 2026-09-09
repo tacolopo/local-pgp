@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Local PGP</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+<main>
+  <header><div><p class="eyebrow">PRIVATE BY DESIGN · LOCAL ONLY</p><h1>Local PGP<span>.</span></h1><p>Keys, text, and a little peace of mind.</p></div><button id="clear" class="secondary">Clear session</button></header>
+  <nav aria-label="Tools"><button type="button" data-panel="generate" aria-pressed="true">1 · Generate keys</button><button type="button" data-panel="encrypt" aria-pressed="false">2 · Encrypt</button><button type="button" data-panel="decrypt" aria-pressed="false">3 · Decrypt</button></nav>
+  <section id="generate">
+    <h2>Make your key pair</h2><p>Share the public key. Keep the private key and its passphrase.</p>
+    <form id="generate-form" autocomplete="off">
+      <label for="name">Name or alias</label><input id="name" required maxlength="200" placeholder="How you want to identify this key">
+      <label for="new-passphrase">Private-key passphrase</label><input id="new-passphrase" type="password" required minlength="12" autocomplete="new-password" placeholder="At least 12 characters; a long phrase works well">
+      <label for="confirm-passphrase">Confirm passphrase</label><input id="confirm-passphrase" type="password" required autocomplete="new-password">
+      <button type="submit">Generate key pair</button>
+    </form>
+    <div id="key-results" hidden><p class="notice">Download your keys before closing or clearing this page. They are not saved automatically.</p><p>Fingerprint <code id="fingerprint"></code></p><div class="actions"><button id="save-public">Save public key</button><button id="save-private" class="secondary">Save private key</button><button id="save-revocation" class="secondary">Save revocation certificate</button></div><p class="hint">Store the revocation certificate privately with your backup. It lets other PGP tools revoke a lost or compromised key.</p></div>
+  </section>
+  <section id="encrypt" hidden>
+    <h2>Turn text into a private message</h2><p>Use the recipient’s public key, or your own to encrypt for yourself.</p>
+    <form id="encrypt-form" autocomplete="off">
+      <label for="public-key">Recipient’s public key</label><textarea id="public-key" required spellcheck="false" rows="4" placeholder="-----BEGIN PGP PUBLIC KEY BLOCK-----"></textarea><label class="file-label">Or import a public key <input type="file" id="public-file" accept=".asc,.txt,.pub"></label>
+      <label for="plaintext">Text to encrypt</label><textarea id="plaintext" required rows="7" spellcheck="false" placeholder="Write or paste your message"></textarea>
+      <button type="submit">Encrypt text</button>
+    </form>
+    <label for="encrypted">Encrypted message</label><textarea id="encrypted" rows="6" readonly spellcheck="false" placeholder="Your encrypted message will appear here"></textarea><button class="secondary" data-copy="encrypted">Copy encrypted message</button>
+  </section>
+  <section id="decrypt" hidden>
+    <h2>Read an encrypted message</h2><p>Use the private key that matches the public key used to encrypt it.</p>
+    <form id="decrypt-form" autocomplete="off">
+      <label for="private-key">Your private key</label><textarea id="private-key" required spellcheck="false" rows="4" placeholder="-----BEGIN PGP PRIVATE KEY BLOCK-----"></textarea><label class="file-label">Or import a private key <input type="file" id="private-file" accept=".asc,.txt,.key"></label>
+      <label for="passphrase">Private-key passphrase</label><input id="passphrase" type="password" autocomplete="off" placeholder="Leave blank only for an unprotected imported key">
+      <label for="ciphertext">Encrypted message</label><textarea id="ciphertext" required rows="6" spellcheck="false" placeholder="-----BEGIN PGP MESSAGE-----"></textarea>
+      <button type="submit">Decrypt text</button>
+    </form>
+    <label for="decrypted">Decrypted text</label><textarea id="decrypted" rows="6" readonly spellcheck="false" placeholder="Your original text will appear here"></textarea><button class="secondary" data-copy="decrypted">Copy decrypted text</button>
+  </section>
+  <p id="status" role="status" aria-live="polite"></p>
+  <footer>Works offline after setup. Nothing is uploaded or saved in browser storage.<br>Save a backup of your private key. Without it and its passphrase, your messages cannot be recovered.</footer>
+</main>
+</body>
+</html>
