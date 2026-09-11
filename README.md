@@ -19,7 +19,7 @@ Open **http://127.0.0.1:8787**. Stop the server with Ctrl+C. Setup requires inte
 
 1. **Generate keys:** enter a name or alias and a passphrase of at least 12 characters. Save your public key, protected private key, and revocation certificate. The generated keys are also loaded into the other two screens.
 2. **Encrypt:** paste or import the recipient’s armored public key, enter text, and click **Encrypt text**. Copy the result to share. Use your own public key to encrypt for yourself.
-3. **Decrypt:** paste or import your armored private key, enter its passphrase and the encrypted message, then click **Decrypt text**.
+3. **Decrypt:** paste or import your armored private key and enter its passphrase. Paste the encrypted message or import a binary `.gpg`/`.pgp` file or an armored `.asc`/`.txt` file (up to 10 MB), then click **Decrypt text**. Imported messages appear in the text box and stay on your device.
 
 The revocation certificate is for use in other PGP software if a key is lost or compromised. Keep it private. This app does not publish or apply revocations.
 

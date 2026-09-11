@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { generateKeys, encryptText, decryptText } from '../src/crypto.js';
+import { unarmor } from 'openpgp';
+import { generateKeys, encryptText, decryptText, importEncryptedMessage } from '../src/crypto.js';
 const passphrase = 'a long test passphrase';
 const keys = await generateKeys('Test only', passphrase);
 test('protected keys round-trip Unicode and multiline text', async () => {
@@ -30,4 +31,20 @@ test('rejects modified ciphertext', async () => {
   const line = lines[index + 1];
   lines[index + 1] = line.slice(0, 15) + (line[15] === 'A' ? 'B' : 'A') + line.slice(16);
   await assert.rejects(decryptText(lines.join('\n'), keys.privateKey, passphrase));
+});
+test('imports binary and armored files without changing the decrypted text', async () => {
+  const text = 'Imported message 🔐\n秘密\n  keep spaces  ';
+  const armored = await encryptText(text, keys.publicKey);
+  const { data: binary } = await unarmor(armored);
+  for (const bytes of [binary, new TextEncoder().encode('\uFEFF\n' + armored.replace(/\n/g, '\r\n') + '\n')]) {
+    const imported = await importEncryptedMessage(bytes);
+    assert.match(imported, /^-----BEGIN PGP MESSAGE-----/);
+    assert.equal(await decryptText(imported, keys.privateKey, passphrase), text);
+  }
+});
+test('rejects empty, malformed and key files as encrypted messages', async () => {
+  for (const value of ['', 'not encrypted', '-----BEGIN PGP MESSAGE-----\ninvalid', keys.publicKey, keys.privateKey]) {
+    await assert.rejects(importEncryptedMessage(new TextEncoder().encode(value)), /Choose a valid PGP message file/);
+  }
+  await assert.rejects(importEncryptedMessage(new Uint8Array([0xff, 0x00, 0x80])), /Choose a valid PGP message file/);
 });

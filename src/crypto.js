@@ -15,6 +15,19 @@ export async function encryptText(text, publicKey) {
   return pgp.encrypt({ message: await pgp.createMessage({ text }), encryptionKeys: key });
 }
 
+export async function importEncryptedMessage(bytes) {
+  const text = new TextDecoder().decode(bytes).trim();
+  const armored = text.startsWith('-----BEGIN PGP MESSAGE-----');
+  try {
+    await pgp.readMessage(armored
+      ? { armoredMessage: text }
+      : { binaryMessage: bytes });
+    return armored ? text : pgp.armor(pgp.enums.armor.message, bytes);
+  } catch {
+    throw new Error('Choose a valid PGP message file: binary (.gpg/.pgp) or armored text (.asc/.txt).');
+  }
+}
+
 export async function decryptText(text, privateKey, passphrase) {
   let key = await pgp.readPrivateKey({ armoredKey: privateKey });
   if (!key.isDecrypted()) key = await pgp.decryptKey({ privateKey: key, passphrase });

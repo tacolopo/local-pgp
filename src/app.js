@@ -1,4 +1,4 @@
-import { generateKeys, encryptText, decryptText } from './crypto.js';
+import { generateKeys, encryptText, decryptText, importEncryptedMessage } from './crypto.js';
 const $ = id => document.getElementById(id);
 let keys;
 let busy = false;
@@ -57,6 +57,18 @@ $('decrypt-form').addEventListener('submit', event => {
       $('decrypted').value = await decryptText($('ciphertext').value, $('private-key').value, $('passphrase').value);
       status('Decrypted. This utility does not verify the sender’s identity.');
     } finally { $('passphrase').value = ''; }
+  });
+});
+$('message-file').addEventListener('change', event => {
+  const file = event.target.files[0];
+  if (!file) return;
+  run('Loading encrypted message…', async () => {
+    $('ciphertext').value = $('decrypted').value = '';
+    try {
+      if (file.size > 10 * 1024 * 1024) throw new Error('Message file is too large (maximum 10 MB).');
+      $('ciphertext').value = await importEncryptedMessage(new Uint8Array(await file.arrayBuffer()));
+      status(`Loaded ${file.name}. Click Decrypt text to read it.`);
+    } finally { event.target.value = ''; }
   });
 });
 for (const type of ['public', 'private']) {

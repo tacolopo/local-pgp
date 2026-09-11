@@ -38,6 +38,8 @@
       <label for="private-key">Your private key</label><textarea id="private-key" required spellcheck="false" rows="4" placeholder="-----BEGIN PGP PRIVATE KEY BLOCK-----"></textarea><label class="file-label">Or import a private key <input type="file" id="private-file" accept=".asc,.txt,.key"></label>
       <label for="passphrase">Private-key passphrase</label><input id="passphrase" type="password" autocomplete="off" placeholder="Leave blank only for an unprotected imported key">
       <label for="ciphertext">Encrypted message</label><textarea id="ciphertext" required rows="6" spellcheck="false" placeholder="-----BEGIN PGP MESSAGE-----"></textarea>
+      <label class="file-label">Or import an encrypted message <input type="file" id="message-file" accept=".gpg,.pgp,.asc,.txt" aria-describedby="message-file-hint"></label>
+      <p id="message-file-hint" class="hint">Binary (.gpg/.pgp) or armored text (.asc/.txt), up to 10 MB. The message loads into the text box above. Files stay on this device.</p>
       <button type="submit">Decrypt text</button>
     </form>
     <label for="decrypted">Decrypted text</label><textarea id="decrypted" rows="6" readonly spellcheck="false" placeholder="Your original text will appear here"></textarea><button class="secondary" data-copy="decrypted">Copy decrypted text</button>
